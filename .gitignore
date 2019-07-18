@@ -1,0 +1,4 @@
+# ignore folder
+/input_data/*
+/code/.ipynb_checkpoints/*
+/intermediate_data/*
