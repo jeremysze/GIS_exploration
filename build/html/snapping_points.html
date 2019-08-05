@@ -1,0 +1,872 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Snapping points to closest &mdash; GIS Exploration 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Network Distance with LION map" href="networkdistance_lion-issues.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> GIS Exploration
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_osm.html">Network distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_lion.html">Network Distance with LION map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_lion-issues.html">Network Distance with LION map</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Snapping points to closest</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Read-in-the-lion-file">Read in the lion file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Linear-referencing">Linear referencing</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GIS Exploration</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Snapping points to closest</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/snapping_points.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Snapping-points-to-closest">
+<h1>Snapping points to closest<a class="headerlink" href="#Snapping-points-to-closest" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>As a test, I will use data from Sidewalk Café Licenses and Applications from NYC Open Data portal</p></li>
+<li><p><a class="reference external" href="https://data.cityofnewyork.us/Business/Sidewalk-Caf-Licenses-and-Applications/qcdj-rwhu">https://data.cityofnewyork.us/Business/Sidewalk-Caf-Licenses-and-Applications/qcdj-rwhu</a></p></li>
+<li><p>For the line network, I will use NYC’s Lion street data</p></li>
+<li><p><a class="reference external" href="https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-lion.page">https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-lion.page</a></p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">box</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span><span class="n">MultiPoint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="n">ZipFile</span> <span class="k">as</span> <span class="n">zzip</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Get the Sidewalk Café Licenses and Applications data!</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;https://data.cityofnewyork.us/api/views/qcdj-rwhu/rows.csv?accessType=DOWNLOAD&quot;</span>
+<span class="n">sidewalk_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_df</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Index([&#39;LICENSE_NBR&#39;, &#39;LIC_STATUS&#39;, &#39;BUSINESS_NAME&#39;, &#39;BUSINESS_NAME2&#39;,
+       &#39;BUILDING&#39;, &#39;STREET&#39;, &#39;CITY&#39;, &#39;STATE&#39;, &#39;ZIP&#39;, &#39;SWC_TYPE&#39;, &#39;SWC_SQ_FT&#39;,
+       &#39;SWC_TABLES&#39;, &#39;SWC_CHAIRS&#39;, &#39;DOHMH&#39;, &#39;LATITUDE&#39;, &#39;LONGITUDE&#39;,
+       &#39;COMMUNITY_DISTRICT&#39;, &#39;CITY_COUNCIL_DISTRICT&#39;, &#39;CD_URL&#39;, &#39;APP_ID&#39;,
+       &#39;APP_SWC_TYPE&#39;, &#39;APP_SQ_FT&#39;, &#39;APP_TABLES&#39;, &#39;APP_CHAIRS&#39;, &#39;APP_STATUS&#39;,
+       &#39;APP_STATUS_DATE&#39;, &#39;EXPIRATION_DATE&#39;, &#39;APP_TOO_DATE&#39;, &#39;SUBMIT_DATE&#39;,
+       &#39;INTAKE&#39;, &#39;INTAKE_DD&#39;, &#39;DPQA&#39;, &#39;SEND_PACKAGE_DD&#39;, &#39;CP&#39;, &#39;CP_DD&#39;, &#39;CB&#39;,
+       &#39;CB_DD&#39;, &#39;HEARING&#39;, &#39;HEARING_DD&#39;, &#39;HEARING_PUBLIC&#39;, &#39;HEARING_PUBLIC_DD&#39;,
+       &#39;CC&#39;, &#39;CC_DD&#39;, &#39;MOO&#39;, &#39;MOO_DD&#39;, &#39;ISSUANCE&#39;, &#39;ISSUANCE_DD&#39;],
+      dtype=&#39;object&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sidewalk_df</span><span class="p">[</span><span class="s1">&#39;LONGITUDE&#39;</span><span class="p">],</span> <span class="n">sidewalk_df</span><span class="p">[</span><span class="s1">&#39;LATITUDE&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sidewalk_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Point</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">sidewalk_df</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1964c947f28&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/snapping_points_9_1.png" src="_images/snapping_points_9_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="p">[</span><span class="s1">&#39;LICENSE_NBR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>1421
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span> <span class="o">=</span> <span class="n">sidewalk_gdf</span><span class="p">[</span><span class="n">sidewalk_gdf</span><span class="p">[</span><span class="s1">&#39;LONGITUDE&#39;</span><span class="p">]</span><span class="o">&gt;-</span><span class="mf">74.5</span> <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="p">[</span><span class="s1">&#39;LICENSE_NBR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>1420
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1964ce6a6d8&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/snapping_points_13_1.png" src="_images/snapping_points_13_1.png" />
+</div>
+</div>
+<div class="section" id="Read-in-the-lion-file">
+<h2>Read in the lion file<a class="headerlink" href="#Read-in-the-lion-file" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>We will use the <code class="docutils literal notranslate"><span class="pre">clean_lion_line</span></code> shapefile we had created in the network_distance_lion.ipynb</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../intermediate_data/clean_lion_line.shp&quot;</span>
+<span class="n">clean_lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1964ce10e48&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/snapping_points_16_1.png" src="_images/snapping_points_16_1.png" />
+</div>
+</div>
+<p>We turn the lines into a single geometry using <code class="docutils literal notranslate"><span class="pre">unary_union</span></code> function</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">union_clean_lion_gdf</span> <span class="o">=</span> <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">unary_union</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Linear-referencing">
+<h2>Linear referencing<a class="headerlink" href="#Linear-referencing" title="Permalink to this headline">¶</a></h2>
+<p>I followed the method outlined here to snap the locations to the nearest pedestrian accessible street.</p>
+<p>Source: <a class="reference external" href="https://gis.stackexchange.com/questions/306838/snap-points-shapefile-to-line-shapefile-using-shapely">https://gis.stackexchange.com/questions/306838/snap-points-shapefile-to-line-shapefile-using-shapely</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="p">[</span><span class="s1">&#39;geometry_st&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">union_clean_lion_gdf</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">union_clean_lion_gdf</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">geometry</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sidewalk_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LICENSE_NBR</th>
+      <th>LIC_STATUS</th>
+      <th>BUSINESS_NAME</th>
+      <th>BUSINESS_NAME2</th>
+      <th>BUILDING</th>
+      <th>STREET</th>
+      <th>CITY</th>
+      <th>STATE</th>
+      <th>ZIP</th>
+      <th>SWC_TYPE</th>
+      <th>...</th>
+      <th>HEARING_PUBLIC</th>
+      <th>HEARING_PUBLIC_DD</th>
+      <th>CC</th>
+      <th>CC_DD</th>
+      <th>MOO</th>
+      <th>MOO_DD</th>
+      <th>ISSUANCE</th>
+      <th>ISSUANCE_DD</th>
+      <th>geometry</th>
+      <th>geometry_st</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1440433-DCA</td>
+      <td>Active</td>
+      <td>MS RESTAURANT CORP.</td>
+      <td>AGNANTI</td>
+      <td>1906</td>
+      <td>DITMARS BLVD</td>
+      <td>ASTORIA</td>
+      <td>NY</td>
+      <td>11105</td>
+      <td>Enclosed</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Pending Review</td>
+      <td>NaN</td>
+      <td>Pending Review</td>
+      <td>NaN</td>
+      <td>Issued</td>
+      <td>05/30/2018</td>
+      <td>POINT (-73.91784619579741 40.78098390044382)</td>
+      <td>POINT (-73.91776638059547 40.7808873180202)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1315977-DCA</td>
+      <td>Active</td>
+      <td>RECTOR STREET FOOD ENTERPRISES LTD.</td>
+      <td>NaN</td>
+      <td>87-89</td>
+      <td>GREENWICH STEET</td>
+      <td>NEW YORK</td>
+      <td>NY</td>
+      <td>10006</td>
+      <td>Unenclosed</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Review Period Expired</td>
+      <td>05/15/2019</td>
+      <td>Pending Review</td>
+      <td>NaN</td>
+      <td>Pending Review</td>
+      <td>NaN</td>
+      <td>POINT (-74.0135041628193 40.70793068772063)</td>
+      <td>POINT (-74.01350153791512 40.70793908949759)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0918358-DCA</td>
+      <td>Active</td>
+      <td>RESTAURANT 597 INC.</td>
+      <td>BUS STOP</td>
+      <td>597</td>
+      <td>HUDSON ST</td>
+      <td>NEW YORK</td>
+      <td>NY</td>
+      <td>10014</td>
+      <td>Unenclosed</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Review Period Expired</td>
+      <td>02/14/2019</td>
+      <td>Approved</td>
+      <td>04/02/2019</td>
+      <td>Issued</td>
+      <td>04/02/2019</td>
+      <td>POINT (-74.00595756048909 40.73702027286546)</td>
+      <td>POINT (-74.00596176863441 40.73693181531322)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2035045-DCA</td>
+      <td>Active</td>
+      <td>CHEZ AMIS CORPORATION</td>
+      <td>FLAT TOP</td>
+      <td>1241</td>
+      <td>AMSTERDAM AVE</td>
+      <td>NEW YORK</td>
+      <td>NY</td>
+      <td>10027</td>
+      <td>Unenclosed</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Review Period Expired</td>
+      <td>06/29/2018</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Issued</td>
+      <td>10/26/2018</td>
+      <td>POINT (-73.9584969980864 40.80999005073067)</td>
+      <td>POINT (-73.95852266141725 40.80992764808176)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1167909-DCA</td>
+      <td>Active</td>
+      <td>THIERRY INC.</td>
+      <td>NaN</td>
+      <td>19</td>
+      <td>E 69TH ST</td>
+      <td>NEW YORK</td>
+      <td>NY</td>
+      <td>10021</td>
+      <td>Small Unenclosed</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Review Period Expired</td>
+      <td>11/22/2018</td>
+      <td>Approved</td>
+      <td>02/11/2019</td>
+      <td>Issued</td>
+      <td>02/11/2019</td>
+      <td>POINT (-73.96657644959133 40.76984548940728)</td>
+      <td>POINT (-73.96661671935232 40.76974975869061)</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 49 columns</p>
+</div></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="networkdistance_lion-issues.html" class="btn btn-neutral float-left" title="Network Distance with LION map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sze, J.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

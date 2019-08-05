@@ -1,0 +1,1715 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Network Distance with LION map &mdash; GIS Exploration 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Network Distance with LION map" href="networkdistance_lion-issues.html" />
+    <link rel="prev" title="Network distance" href="networkdistance_osm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> GIS Exploration
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_osm.html">Network distance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Network Distance with LION map</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Downloading-and-Extracting-the-NYC-Lion-file">Downloading and Extracting the NYC Lion file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Open-the-lion-layer">Open the lion layer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Save-the-lion-layer-as-a-shapefile">Save the lion layer as a shapefile</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Test-case">Test case</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Network-analysis!">Network analysis!</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_lion-issues.html">Network Distance with LION map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snapping_points.html">Snapping points to closest</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GIS Exploration</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Network Distance with LION map</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/networkdistance_lion.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Network-Distance-with-LION-map">
+<h1>Network Distance with LION map<a class="headerlink" href="#Network-Distance-with-LION-map" title="Permalink to this headline">¶</a></h1>
+<p>We will attempt to use networkx library with the lion map to calculate network distance for people walking between two points - Download the zipfile - Extract and save the zipfile - Open the line shapefile - Extract nodes - Calculate network distance!</p>
+<p>We will use the following libraries to achieve our purpose.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">box</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span><span class="n">MultiPoint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="n">ZipFile</span> <span class="k">as</span> <span class="n">zzip</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;H:\\Work\\GIS_exploration\\code&#39;
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">fiona</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.8.6
+</pre></div></div>
+</div>
+<div class="section" id="Downloading-and-Extracting-the-NYC-Lion-file">
+<h2>Downloading and Extracting the NYC Lion file<a class="headerlink" href="#Downloading-and-Extracting-the-NYC-Lion-file" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>This does not need to be run repeatedly</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">url</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyclion_19b.zip&quot;</span>
+
+<span class="c1"># download the file contents in binary format</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="c1"># open method to open a file on your system and write the contents</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../input_data/nyclion_19b.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="s2">&quot;../input_data/nyclion_19b.zip&quot;</span>
+<span class="c1"># opening the zip file in READ mode</span>
+<span class="k">with</span> <span class="n">zzip</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="c1"># printing all the contents of the zip file</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">printdir</span><span class="p">()</span>
+
+    <span class="c1"># extracting all the files</span>
+    <span class="c1">#rint(&#39;Extracting all the files now...&#39;)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;../input_data/&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+File Name                                             Modified             Size
+lion/lion.gdb/a00000001.freelist               2019-05-13 12:48:56         4440
+lion/lion.gdb/a00000001.gdbindexes             2019-05-13 12:42:56          110
+lion/lion.gdb/a00000001.gdbtable               2019-05-13 12:48:56          385
+lion/lion.gdb/a00000001.gdbtablx               2019-05-13 12:48:56         5152
+lion/lion.gdb/a00000001.TablesByName.atx       2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000002.gdbtable               2019-05-13 12:42:56         2055
+lion/lion.gdb/a00000002.gdbtablx               2019-05-13 12:42:56         5152
+lion/lion.gdb/a00000003.gdbindexes             2019-05-13 12:42:56           42
+lion/lion.gdb/a00000003.gdbtable               2019-05-13 12:44:22         1825
+lion/lion.gdb/a00000003.gdbtablx               2019-05-13 12:44:22         5152
+lion/lion.gdb/a00000004.CatItemsByPhysicalName.atx 2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000004.CatItemsByType.atx     2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000004.FDO_UUID.atx           2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000004.freelist               2019-05-13 12:49:38        57688
+lion/lion.gdb/a00000004.gdbindexes             2019-05-13 12:42:56          310
+lion/lion.gdb/a00000004.gdbtable               2019-05-13 12:49:38       399741
+lion/lion.gdb/a00000004.gdbtablx               2019-05-13 12:49:38         5152
+lion/lion.gdb/a00000004.spx                    2019-05-13 12:49:30        45078
+lion/lion.gdb/a00000005.CatItemTypesByName.atx 2019-05-13 12:42:56        12310
+lion/lion.gdb/a00000005.CatItemTypesByParentTypeID.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000005.CatItemTypesByUUID.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000005.gdbindexes             2019-05-13 12:42:56          296
+lion/lion.gdb/a00000005.gdbtable               2019-05-13 12:42:56         1803
+lion/lion.gdb/a00000005.gdbtablx               2019-05-13 12:42:56         5152
+lion/lion.gdb/a00000006.CatRelsByDestinationID.atx 2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000006.CatRelsByOriginID.atx  2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000006.CatRelsByType.atx      2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000006.FDO_UUID.atx           2019-05-13 12:48:56         4118
+lion/lion.gdb/a00000006.freelist               2019-05-13 12:48:56         4440
+lion/lion.gdb/a00000006.gdbindexes             2019-05-13 12:42:56          318
+lion/lion.gdb/a00000006.gdbtable               2019-05-13 12:48:56          701
+lion/lion.gdb/a00000006.gdbtablx               2019-05-13 12:48:56         5152
+lion/lion.gdb/a00000007.CatRelTypesByBackwardLabel.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.CatRelTypesByDestItemTypeID.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.CatRelTypesByForwardLabel.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.CatRelTypesByName.atx  2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx 2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.CatRelTypesByUUID.atx  2019-05-13 12:42:56         4118
+lion/lion.gdb/a00000007.gdbindexes             2019-05-13 12:42:56          602
+lion/lion.gdb/a00000007.gdbtable               2019-05-13 12:42:56         2504
+lion/lion.gdb/a00000007.gdbtablx               2019-05-13 12:42:56         5152
+lion/lion.gdb/a0000000a.gdbindexes             2019-05-13 12:44:48          116
+lion/lion.gdb/a0000000a.gdbtable               2019-05-13 12:44:48      3247250
+lion/lion.gdb/a0000000a.gdbtablx               2019-05-13 12:44:48       665632
+lion/lion.gdb/a0000000a.spx                    2019-05-13 12:44:48      1609750
+lion/lion.gdb/a0000000b.gdbindexes             2019-05-13 12:44:56           66
+lion/lion.gdb/a0000000b.gdbtable               2019-05-13 12:45:24      5491953
+lion/lion.gdb/a0000000b.gdbtablx               2019-05-13 12:45:24      1172512
+lion/lion.gdb/a0000000c.gdbindexes             2019-05-13 12:45:30           66
+lion/lion.gdb/a0000000c.gdbtable               2019-05-13 12:45:42      6406110
+lion/lion.gdb/a0000000c.gdbtablx               2019-05-13 12:45:42       527392
+lion/lion.gdb/a0000000d.freelist               2019-05-13 12:48:44        20824
+lion/lion.gdb/a0000000d.gdbindexes             2019-05-13 12:48:30          116
+lion/lion.gdb/a0000000d.gdbtable               2019-05-13 12:48:44    126137796
+lion/lion.gdb/a0000000d.gdbtablx               2019-05-13 12:48:44      1136672
+lion/lion.gdb/a0000000d.spx                    2019-05-13 12:48:30      4362262
+lion/lion.gdb/gdb                              2019-05-13 12:42:56            4
+lion/lion.gdb/timestamps                       2019-05-13 12:47:14          400
+lion/LION - Street Name Labels.lyr             2013-09-24 18:10:22        18432
+lion/LION Streets - Generic.lyr                2017-02-10 07:51:36        21504
+lion/LION Streets - Roadbeds.lyr               2017-02-10 07:54:38        21504
+lion/LION - Generic.lyr                        2017-02-10 07:48:08        24576
+lion/LION - Roadbeds.lyr                       2017-02-10 07:49:32        24576
+lion/LION - Nodes.lyr                          2012-08-17 13:19:50        11776
+lion/LION - Street Direction Arrows (ArcGIS 10x).lyr 2013-01-15 10:58:06        22528
+lion/LION - Street Direction Arrows (Requires Maplex).lyr 2013-03-12 14:22:44        22528
+lion/TrafficRepArrows.style                    2012-09-27 08:32:40       598016
+lion/ReadMe.txt                                2014-03-17 15:27:04         7758
+altnames_metadata.html                         2019-05-13 12:49:22        38976
+altnames_metadata.pdf                          2019-05-13 14:35:58       129541
+lion_metadata.html                             2019-05-13 12:49:12       199830
+lion_metadata.pdf                              2019-05-13 14:35:22       483768
+node_metadata.html                             2019-05-13 12:49:32        42396
+node_metadata.pdf                              2019-05-13 14:34:28       135027
+node_stname_metadata.html                      2019-05-13 12:49:40        32999
+node_stname_metadata.pdf                       2019-05-13 14:36:56       123835
+Done!
+</pre></div></div>
+</div>
+<p>Get layers from GDB</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gdb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../input_data/lion/lion.gdb&quot;</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">fiona</span><span class="o">.</span><span class="n">listlayers</span><span class="p">(</span><span class="n">gdb_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>View the layers</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+node
+node_stname
+altnames
+lion
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Open-the-lion-layer">
+<h2>Open the lion layer<a class="headerlink" href="#Open-the-lion-layer" title="Permalink to this headline">¶</a></h2>
+<p>It was impossible to read in this layer with the old version of <code class="docutils literal notranslate"><span class="pre">Fiona</span></code>. Please ensure that your <code class="docutils literal notranslate"><span class="pre">Fiona</span></code> version is the most up to date.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gdb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../input_data/lion/lion.gdb&quot;</span>
+<span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_file</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;FileGDB&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;lion&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">crs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;init&#39;: &#39;epsg:2263&#39;}
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/networkdistance_lion_16_0.png" src="_images/networkdistance_lion_16_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Street</th>
+      <th>SAFStreetName</th>
+      <th>FeatureTyp</th>
+      <th>SegmentTyp</th>
+      <th>IncExFlag</th>
+      <th>RB_Layer</th>
+      <th>NonPed</th>
+      <th>TrafDir</th>
+      <th>TrafSrc</th>
+      <th>SpecAddr</th>
+      <th>...</th>
+      <th>LHi_Hyphen</th>
+      <th>RLo_Hyphen</th>
+      <th>RHi_Hyphen</th>
+      <th>FromLeft</th>
+      <th>ToLeft</th>
+      <th>FromRight</th>
+      <th>ToRight</th>
+      <th>Join_ID</th>
+      <th>SHAPE_Length</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>EAST 168 STREET</td>
+      <td></td>
+      <td>0</td>
+      <td>U</td>
+      <td></td>
+      <td>B</td>
+      <td></td>
+      <td>T</td>
+      <td>DOT</td>
+      <td></td>
+      <td>...</td>
+      <td>699</td>
+      <td>596</td>
+      <td>716</td>
+      <td>599</td>
+      <td>699</td>
+      <td>596</td>
+      <td>716</td>
+      <td>2251001000000</td>
+      <td>396.030947</td>
+      <td>(LINESTRING (-73.90346685871668 40.83035379646...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>WEST 192 STREET</td>
+      <td></td>
+      <td>0</td>
+      <td>U</td>
+      <td></td>
+      <td>B</td>
+      <td></td>
+      <td>A</td>
+      <td>DOT</td>
+      <td></td>
+      <td>...</td>
+      <td>98</td>
+      <td>63</td>
+      <td>99</td>
+      <td>58</td>
+      <td>98</td>
+      <td>63</td>
+      <td>99</td>
+      <td>2798401000000</td>
+      <td>279.360514</td>
+      <td>(LINESTRING (-73.9012006771837 40.866613078249...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>UNION AVENUE</td>
+      <td></td>
+      <td>0</td>
+      <td>U</td>
+      <td></td>
+      <td>B</td>
+      <td></td>
+      <td>W</td>
+      <td>DOT</td>
+      <td></td>
+      <td>...</td>
+      <td>1079</td>
+      <td>1016</td>
+      <td>1084</td>
+      <td>1017</td>
+      <td>1079</td>
+      <td>1016</td>
+      <td>1084</td>
+      <td>2728001000000</td>
+      <td>618.327133</td>
+      <td>(LINESTRING (-73.90117669122948 40.82438890917...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>UNION AVENUE</td>
+      <td>BEHAGEN PLAYGROUND</td>
+      <td>0</td>
+      <td>U</td>
+      <td></td>
+      <td>B</td>
+      <td></td>
+      <td>W</td>
+      <td>DOT</td>
+      <td>N</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>21279501000000N</td>
+      <td>618.327133</td>
+      <td>(LINESTRING (-73.90117669122948 40.82438890917...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>DELAFIELD AVENUE</td>
+      <td></td>
+      <td>6</td>
+      <td>U</td>
+      <td></td>
+      <td>B</td>
+      <td></td>
+      <td>T</td>
+      <td>DOT</td>
+      <td></td>
+      <td>...</td>
+      <td>4645</td>
+      <td>4600</td>
+      <td>4664</td>
+      <td>4601</td>
+      <td>4645</td>
+      <td>4600</td>
+      <td>4664</td>
+      <td>2187601000000</td>
+      <td>670.281037</td>
+      <td>(LINESTRING (-73.90695663477764 40.89360793519...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 118 columns</p>
+</div></div>
+</div>
+<p>We need to clean the <code class="docutils literal notranslate"><span class="pre">lion_gdf</span></code> a little so that non-pedestrians accessible routes are not included.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FeatureTyp</span> <span class="pre">&lt;&gt;</span> <span class="pre">'F'</span> <span class="pre">AND</span> <span class="pre">FeatureTyp</span> <span class="pre">&lt;&gt;</span> <span class="pre">'9'</span> <span class="pre">AND</span> <span class="pre">FeatureTyp</span> <span class="pre">&lt;&gt;</span> <span class="pre">'1'</span> <span class="pre">AND</span> <span class="pre">FeatureTyp</span> <span class="pre">&lt;&gt;</span> <span class="pre">'7'</span> <span class="pre">AND</span> <span class="pre">FeatureTyp</span> <span class="pre">&lt;&gt;</span> <span class="pre">'3'</span> <span class="pre">AND</span> <span class="pre">TrafDir</span> <span class="pre">&lt;&gt;</span> <span class="pre">''</span> <span class="pre">AND</span> <span class="pre">NonPed</span> <span class="pre">&lt;&gt;</span> <span class="pre">'V'</span></code></p>
+<p>Source: <a class="reference external" href="https://pointsunknown.nyc/tutorials/04_Q3_SpatialAnalysis.html">https://pointsunknown.nyc/tutorials/04_Q3_SpatialAnalysis.html</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;Street&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>226977
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    201908
+True      25069
+Name: todrop, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    202573
+True      24404
+Name: todrop, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>T    96024
+W    44976
+A    40322
+     34499
+P    11156
+Name: TrafDir, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    192478
+True      34499
+Name: todrop, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span> <span class="o">|</span>
+                    <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">]))</span> <span class="o">|</span>
+                    <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    166475
+True      60502
+Name: todrop, dtype: int64
+</pre></div>
+</div>
+</div>
+<p>Save the clean version in a new dataframe</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>Checking that those observations were dropped</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    166475
+Name: NonPed, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    166475
+Name: FeatureTyp, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">])</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False    166475
+Name: TrafDir, dtype: int64
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;todrop&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[113]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[113]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x23137539a90&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/networkdistance_lion_36_1.png" src="_images/networkdistance_lion_36_1.png" />
+</div>
+</div>
+<div class="section" id="Save-the-lion-layer-as-a-shapefile">
+<h3>Save the lion layer as a shapefile<a class="headerlink" href="#Save-the-lion-layer-as-a-shapefile" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../intermediate_data/clean_lion_line.shp&quot;</span>
+<span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Test-case">
+<h2>Test case<a class="headerlink" href="#Test-case" title="Permalink to this headline">¶</a></h2>
+<p>We will use two points that are across from each other, but has a highway between them. The network analysis route should move along the road until it find a road that can cross under the highway.</p>
+<p>To see the points:</p>
+<p>Destination point: <a class="reference external" href="https://www.google.com/maps/place/40%C2%B044">https://www.google.com/maps/place/40%C2%B044</a>’13.9%22N+73%C2%B051’<a class="reference external" href="mailto:50&#46;6%22W/&#37;&#52;&#48;40&#46;737199">50<span>&#46;</span>6%22W/<span>&#64;</span>40<span>&#46;</span>737199</a>,-73.8662467,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d40.737199!4d-73.864058</p>
+<p>Origin point: <a class="reference external" href="https://www.google.com/maps/place/40%C2%B043">https://www.google.com/maps/place/40%C2%B043</a>’56.9%22N+73%C2%B051’<a class="reference external" href="mailto:42&#46;0%22W/&#37;&#52;&#48;40&#46;732484">42<span>&#46;</span>0%22W/<span>&#64;</span>40<span>&#46;</span>732484</a>,-73.8638547,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d40.732484!4d-73.861666</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../intermediate_data/clean_lion_line.shp&quot;</span>
+<span class="n">lion_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">read_shp</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_graph</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;networkx.classes.digraph.DiGraph at 0x1fbe3e6bf60&gt;
+</pre></div>
+</div>
+</div>
+<p>This is the key to calculating the right network distance. The graph must be undirected for pedestrian distance.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">undirected_lion_graph</span> <span class="o">=</span> <span class="n">lion_graph</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">undirected_lion_graph</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;networkx.classes.graph.Graph at 0x1fc0f464400&gt;
+</pre></div>
+</div>
+</div>
+<p>Writing the Graph to shapefile creates the nodes and edges</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../intermediate_data&quot;</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_shp</span><span class="p">(</span><span class="n">lion_graph</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Read the <code class="docutils literal notranslate"><span class="pre">node</span></code> as geopandas dataframes</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;../intermediate_data/nodes.shp&quot;</span>
+<span class="n">node_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">node_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FID</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>POINT (-73.90346685871668 40.83035379646685)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>POINT (-73.9023800533195 40.82964662740077)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>POINT (-73.9012006771837 40.86661307824997)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>POINT (-73.90207336386543 40.86699910556131)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>POINT (-73.90117669122948 40.82438890917424)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">node_gdf</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">node_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span><span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/networkdistance_lion_51_0.png" src="_images/networkdistance_lion_51_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">target_xy</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">73.864058</span><span class="p">,</span> <span class="mf">40.737199</span><span class="p">)</span>
+<span class="n">orig_xy</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">73.861666</span><span class="p">,</span><span class="mf">40.732484</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We place the geometry of the <code class="docutils literal notranslate"><span class="pre">nodes</span></code> into the an numpy array and put the array into scipy’s cKDTree. This turns the “index into a set of k-dimensional points which can be used to rapidly look up the nearest neighbors of any point.” Super fast nearest-neighbor matching.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">nB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">node_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">node_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">y</span><span class="p">))</span> <span class="p">)</span>
+<span class="n">btree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">nB</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Here we are finding the nearest node to our target_xy.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dist</span><span class="p">,</span> <span class="n">target_node</span> <span class="o">=</span> <span class="n">btree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">target_xy</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">target_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+3.7438436323677245e-05 66053
+</pre></div></div>
+</div>
+<p>The distance measure above will be important for us to calculate the entire distance (distance from origin_xy to orgin_node + network distance + distance from target node to target_xy).</p>
+<p>Lets view the node and the geometry of that node.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">node_gdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">node_gdf</span><span class="p">[</span><span class="s1">&#39;FID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">66053</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>66053    POINT (-73.86404739259665 40.73716309568955)
+Name: geometry, dtype: object
+</pre></div>
+</div>
+</div>
+<p>Repeat for the origin node.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dist</span><span class="p">,</span> <span class="n">orig_node</span> <span class="o">=</span> <span class="n">btree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">orig_xy</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">orig_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2.6730270855641812e-05 76256
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">node_gdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">node_gdf</span><span class="p">[</span><span class="s1">&#39;FID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">76256</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>76256    POINT (-73.86164235281636 40.73247153733231)
+Name: geometry, dtype: object
+</pre></div>
+</div>
+</div>
+<p>View the contents in the graph</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">list</span><span class="p">(</span><span class="n">undirected_lion_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[(-73.90346685871668, 40.83035379646685),
+ (-73.9023800533195, 40.82964662740077),
+ (-73.9012006771837, 40.86661307824997),
+ (-73.90207336386543, 40.866999105561305),
+ (-73.90117669122948, 40.82438890917424),
+ (-73.90050540472349, 40.826007622001576),
+ (-73.90695663477764, 40.89360793519608),
+ (-73.90695595783123, 40.89544764345081),
+ (-73.90706510075327, 40.89927414148254),
+ (-73.9071219824245, 40.89929111645273)]
+</pre></div>
+</div>
+</div>
+<p>In the <code class="docutils literal notranslate"><span class="pre">undirected_lion_graph</span></code>, the labels of the nodes are by default the coordinates. We will change it to intergers for ease of finding them.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">undirected_lion_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">convert_node_labels_to_integers</span><span class="p">(</span><span class="n">undirected_lion_graph</span><span class="p">,</span> <span class="n">first_label</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">list</span><span class="p">(</span><span class="n">undirected_lion_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</pre></div>
+</div>
+</div>
+<p>Checking that <code class="docutils literal notranslate"><span class="pre">undirected_lion_graph</span></code> has the nodes from above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#target node</span>
+<span class="n">undirected_lion_graph</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">target_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>True
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#origin node</span>
+<span class="n">undirected_lion_graph</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">orig_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Network-analysis!">
+<h2>Network analysis!<a class="headerlink" href="#Network-analysis!" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="o">=</span><span class="n">undirected_lion_graph</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">orig_node</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target_node</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Capture the route nodes and turn it into a <code class="docutils literal notranslate"><span class="pre">LineString</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_nodes</span> <span class="o">=</span> <span class="n">node_gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">route</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_line</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">route_nodes</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Make a geodataframe to store the data</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[75]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">node_gdf</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+<span class="n">route_geom</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">route_geom</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</div>
+<p>Add the information into the geodataframe</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">route_line</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">route_nodes</span><span class="p">[</span><span class="s1">&#39;FID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Now is the time to convert the data into <code class="docutils literal notranslate"><span class="pre">epsg</span> <span class="pre">2263</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="o">.</span><span class="n">crs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;init&#39;: &#39;epsg:4326&#39;}
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span> <span class="o">=</span> <span class="n">route_geom</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:2263&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<p>Calculate network distance of the route!</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="p">[</span><span class="s1">&#39;length_ft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">route_geom</span><span class="o">.</span><span class="n">length</span>
+<span class="n">route_geom</span><span class="p">[</span><span class="s1">&#39;length_miles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">route_geom</span><span class="p">[</span><span class="s1">&#39;length_ft&#39;</span><span class="p">]</span> <span class="o">*</span><span class="mf">0.000189394</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>id</th>
+      <th>length_ft</th>
+      <th>length_miles</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>LINESTRING (1022595.221231206 206165.993610297...</td>
+      <td>[76256, 58177, 66289, 76111, 72542, 72541, 813...</td>
+      <td>2893.217327</td>
+      <td>0.547958</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">route_geom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/networkdistance_lion_87_0.png" src="_images/networkdistance_lion_87_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fp</span> <span class="o">=</span>  <span class="sa">r</span><span class="s2">&quot;..\intermediate_data\lion_test_route_shapefile.shp&quot;</span>
+<span class="n">route_geom</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;geometry&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="networkdistance_lion-issues.html" class="btn btn-neutral float-right" title="Network Distance with LION map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="networkdistance_osm.html" class="btn btn-neutral float-left" title="Network distance" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sze, J.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
