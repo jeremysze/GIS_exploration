@@ -3,3 +3,7 @@
 /input_data/*
 /code/.ipynb_checkpoints/*
 /intermediate_data/*
+/source
+make.bat
+Makefile
+/docs
