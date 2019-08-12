@@ -14,6 +14,7 @@ Welcome to GIS Exploration's documentation!
    networkdistance_lion.ipynb
    networkdistance_lion-issues.ipynb
    snapping_points_to_line.ipynb
+   Extracting_lion.ipynb
 
 Indices and tables
 ==================

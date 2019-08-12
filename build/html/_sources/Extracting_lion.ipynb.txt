@@ -1,0 +1,242 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Extracting LION from BYTES of the BIG APPLE\n",
+    "\n",
+    "We want to use each student-year-addresses with the respective year's \"LION - File Geodatabase\" to calculate the network distance.\n",
+    "\n",
+    "\"LION - File Geodatabase\" from 2012 to 2016 with student addresses"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import networkx as nx\n",
+    "from shapely.geometry import box, LineString, Point,MultiPoint\n",
+    "import os\n",
+    "import sys\n",
+    "import requests\n",
+    "from zipfile import ZipFile as zzip\n",
+    "import fiona\n",
+    "from scipy.spatial import cKDTree\n",
+    "import numpy as np\n",
+    "import time\n",
+    "\n",
+    "sys.path.append(os.path.realpath('..'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'C:\\\\Work\\\\Box Sync\\\\Fresh\\\\code'"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "os.getcwd()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Downloading the LION - File Geodatabase"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lion_2016 = r\"nyc_lion16a.zip\"\n",
+    "lion_2015 = r\"nyc_lion15a.zip\"\n",
+    "lion_2014 = r\"nyc_lion14aav.zip\"\n",
+    "lion_2013 = r\"nyc_lion13a.zip\"\n",
+    "lion_2012 = r\"nyc_lion12aav.zip\"\n",
+    "path = r\"https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Loop type: Iterating over a tuple\n",
+    "t = (\"nyc_lion16a.zip\", \"nyc_lion15a.zip\", \"nyc_lion14aav.zip\", \"nyc_lion13a.zip\",\"nyc_lion12aav.zip\") \n",
+    "for i in t: \n",
+    "    #print(path+i)\n",
+    "    # download the file contents in binary format\n",
+    "    r = requests.get(path+i)\n",
+    "    # open method to open a file on your system and write the contents\n",
+    "    with open(\"../input_data/\"+i, \"wb\") as file:\n",
+    "        file.write(r.content)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Done!\n",
+      "Done!\n",
+      "Done!\n",
+      "Done!\n",
+      "Done!\n"
+     ]
+    }
+   ],
+   "source": [
+    "t = (\"nyc_lion16a\", \"nyc_lion15a\", \"nyc_lion14aav\", \"nyc_lion13a\",\"nyc_lion12aav\") \n",
+    "for i in t:\n",
+    "    fp = \"../input_data/\"+i+\".zip\"\n",
+    "\n",
+    "    # opening the zip file in READ mode \n",
+    "    with zzip(fp, 'r') as file: \n",
+    "        # printing all the contents of the zip file \n",
+    "        #file.printdir() \n",
+    "        path = \"../input_data/\"+i\n",
+    "        os.mkdir(path)\n",
+    "        # extracting all the files \n",
+    "        #rint('Extracting all the files now...') \n",
+    "        file.extractall(path) \n",
+    "        print('Done!')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Extracting the lion layer\n",
+    "- This is done manually rather than through loops because the file structure within each year's LION folder is a little different"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Reading in file: ../input_data/nyc_lion12aav/lion/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2012\n",
+      "Creating new folder -lion_gdf2012- in intermediate_data\n",
+      "Writing data to\n",
+      "Writing data to ../intermediate_data/lion_gdf2012/lion_gdf2012.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion13a/lion/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2013\n",
+      "Creating new folder -lion_gdf2013- in intermediate_data\n",
+      "Writing data to\n",
+      "Writing data to ../intermediate_data/lion_gdf2013/lion_gdf2013.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion14aav/lion/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2014\n",
+      "Creating new folder -lion_gdf2014- in intermediate_data\n",
+      "Writing data to\n",
+      "Writing data to ../intermediate_data/lion_gdf2014/lion_gdf2014.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion15a/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2015\n",
+      "Creating new folder -lion_gdf2015- in intermediate_data\n",
+      "Writing data to\n",
+      "Writing data to ../intermediate_data/lion_gdf2015/lion_gdf2015.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion16a/lion/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2016\n",
+      "Creating new folder -lion_gdf2016- in intermediate_data\n",
+      "Writing data to\n",
+      "Writing data to ../intermediate_data/lion_gdf2016/lion_gdf2016.shp\n",
+      "Done!\n"
+     ]
+    }
+   ],
+   "source": [
+    "gdb_paths = [\n",
+    "    [\"lion_gdf2012\",\"../input_data/nyc_lion12aav/lion/lion.gdb\"],\n",
+    "    [\"lion_gdf2013\",\"../input_data/nyc_lion13a/lion/lion.gdb\"],\n",
+    "    [\"lion_gdf2014\",\"../input_data/nyc_lion14aav/lion/lion.gdb\"],\n",
+    "    [\"lion_gdf2015\",\"../input_data/nyc_lion15a/lion.gdb\"],\n",
+    "    [\"lion_gdf2016\",\"../input_data/nyc_lion16a/lion/lion.gdb\"]\n",
+    "]\n",
+    "\n",
+    "for i in range(len(gdb_paths)):\n",
+    "    print(\"Reading in file: \" + gdb_paths[i][1])\n",
+    "    lion_gdf = gpd.read_file(gdb_paths[i][1], driver='FileGDB', layer='lion')\n",
+    "    lion_gdf = lion_gdf.to_crs({'init': 'epsg:4326'})\n",
+    "    \n",
+    "    print(\"Removing the non pedestrian accessible roads/paths\")\n",
+    "    lion_gdf['todrop'] = (lion_gdf['NonPed'] == 'V') |(lion_gdf['FeatureTyp'].isin(['F','9','1','7','3'])) |(lion_gdf['TrafDir'].isin([' ']))\n",
+    "    \n",
+    "    print(\"Creating dataframe: \" +gdb_paths[i][0])\n",
+    "    clean_lion_gdf = gpd.GeoDataFrame(lion_gdf.loc[lion_gdf['todrop'] == False])\n",
+    "    clean_lion_gdf.drop(['todrop'], axis = 1, inplace = True)\n",
+    "    clean_lion_gdf['distance'] = clean_lion_gdf['geometry'].length\n",
+    "    \n",
+    "    print(\"Creating new folder -\" + gdb_paths[i][0]+ \"- in intermediate_data\")\n",
+    "    path = \"../intermediate_data/\"+gdb_paths[i][0]\n",
+    "    os.mkdir(path)\n",
+    "    \n",
+    "    #Saving the clean_lion_gdf in their respective folders\n",
+    "    print(\"Writing data to\")\n",
+    "    fp = path+\"/\"+gdb_paths[i][0]+\".shp\"\n",
+    "    print(\"Writing data to \"+ fp)\n",
+    "    clean_lion_gdf.to_file(fp)\n",
+    "    print(\"Done!\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

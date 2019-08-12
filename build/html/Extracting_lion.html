@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Extracting LION from BYTES of the BIG APPLE &mdash; GIS Exploration 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Snapping points to line" href="snapping_points_to_line.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> GIS Exploration
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_osm.html">Network distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_lion.html">Network Distance with LION map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networkdistance_lion-issues.html">Network Distance with LION map (weight)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snapping_points_to_line.html">Snapping points to line</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Extracting LION from BYTES of the BIG APPLE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Downloading-the-LION---File-Geodatabase">Downloading the LION - File Geodatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Extracting-the-lion-layer">Extracting the lion layer</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GIS Exploration</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Extracting LION from BYTES of the BIG APPLE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Extracting_lion.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Extracting-LION-from-BYTES-of-the-BIG-APPLE">
+<h1>Extracting LION from BYTES of the BIG APPLE<a class="headerlink" href="#Extracting-LION-from-BYTES-of-the-BIG-APPLE" title="Permalink to this headline">¶</a></h1>
+<p>We want to use each student-year-addresses with the respective year’s “LION - File Geodatabase” to calculate the network distance.</p>
+<p>“LION - File Geodatabase” from 2012 to 2016 with student addresses</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">box</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span><span class="p">,</span><span class="n">MultiPoint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="n">ZipFile</span> <span class="k">as</span> <span class="n">zzip</span>
+<span class="kn">import</span> <span class="nn">fiona</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;C:\\Work\\Box Sync\\Fresh\\code&#39;
+</pre></div>
+</div>
+</div>
+<div class="section" id="Downloading-the-LION---File-Geodatabase">
+<h2>Downloading the LION - File Geodatabase<a class="headerlink" href="#Downloading-the-LION---File-Geodatabase" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lion_2016</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion16a.zip&quot;</span>
+<span class="n">lion_2015</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion15a.zip&quot;</span>
+<span class="n">lion_2014</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion14aav.zip&quot;</span>
+<span class="n">lion_2013</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion13a.zip&quot;</span>
+<span class="n">lion_2012</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion12aav.zip&quot;</span>
+<span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Loop type: Iterating over a tuple</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a.zip&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav.zip&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+    <span class="c1">#print(path+i)</span>
+    <span class="c1"># download the file contents in binary format</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+    <span class="c1"># open method to open a file on your system and write the contents</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s2">&quot;.zip&quot;</span>
+
+    <span class="c1"># opening the zip file in READ mode</span>
+    <span class="k">with</span> <span class="n">zzip</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="c1"># printing all the contents of the zip file</span>
+        <span class="c1">#file.printdir()</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c1"># extracting all the files</span>
+        <span class="c1">#rint(&#39;Extracting all the files now...&#39;)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Done!
+Done!
+Done!
+Done!
+Done!
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Extracting-the-lion-layer">
+<h2>Extracting the lion layer<a class="headerlink" href="#Extracting-the-lion-layer" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>This is done manually rather than through loops because the file structure within each year’s LION folder is a little different</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gdb_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2012&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion12aav/lion/lion.gdb&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2013&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion13a/lion/lion.gdb&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2014&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion14aav/lion/lion.gdb&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2015&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion15a/lion.gdb&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2016&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion16a/lion/lion.gdb&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reading in file: &quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;FileGDB&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;lion&#39;</span><span class="p">)</span>
+    <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Removing the non pedestrian accessible roads/paths&quot;</span><span class="p">)</span>
+    <span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">]))</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">]))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating dataframe: &quot;</span> <span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">clean_lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>
+    <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;todrop&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">length</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating new folder -&quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span> <span class="s2">&quot;- in intermediate_data&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../intermediate_data/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1">#Saving the clean_lion_gdf in their respective folders</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing data to&quot;</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.shp&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing data to &quot;</span><span class="o">+</span> <span class="n">fp</span><span class="p">)</span>
+    <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading in file: ../input_data/nyc_lion12aav/lion/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2012
+Creating new folder -lion_gdf2012- in intermediate_data
+Writing data to
+Writing data to ../intermediate_data/lion_gdf2012/lion_gdf2012.shp
+Done!
+Reading in file: ../input_data/nyc_lion13a/lion/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2013
+Creating new folder -lion_gdf2013- in intermediate_data
+Writing data to
+Writing data to ../intermediate_data/lion_gdf2013/lion_gdf2013.shp
+Done!
+Reading in file: ../input_data/nyc_lion14aav/lion/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2014
+Creating new folder -lion_gdf2014- in intermediate_data
+Writing data to
+Writing data to ../intermediate_data/lion_gdf2014/lion_gdf2014.shp
+Done!
+Reading in file: ../input_data/nyc_lion15a/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2015
+Creating new folder -lion_gdf2015- in intermediate_data
+Writing data to
+Writing data to ../intermediate_data/lion_gdf2015/lion_gdf2015.shp
+Done!
+Reading in file: ../input_data/nyc_lion16a/lion/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2016
+Creating new folder -lion_gdf2016- in intermediate_data
+Writing data to
+Writing data to ../intermediate_data/lion_gdf2016/lion_gdf2016.shp
+Done!
+</pre></div></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="snapping_points_to_line.html" class="btn btn-neutral float-left" title="Snapping points to line" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sze, J.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
