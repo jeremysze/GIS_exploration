@@ -91,13 +91,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#Adding-these-points-into-the-street-network">Adding these points into the street network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Reading-in-the-modified-street-network">Reading in the modified street network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Convert-to-undirected-graph">Convert to undirected graph</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#Locating-the-nodes-for-each-location">Locating the nodes for each location</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Locating-the-nodes-for-each-location">Locating the nodes for each location</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Finding-the-nearest-2-subway-entrances">Finding the nearest 2 subway entrances</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#Network-distance">Network distance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Network-distance">Network distance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Plot-the-schools,-subway-and-routes">Plot the schools, subway and routes</a></li>
 </ul>
 </li>
@@ -1683,9 +1679,8 @@ new_nodes.shp and new_edges.shp are written into ../intermediate_data/nyclion_19
 </div>
 </div>
 </div>
-</div>
 <div class="section" id="Locating-the-nodes-for-each-location">
-<h1>Locating the nodes for each location<a class="headerlink" href="#Locating-the-nodes-for-each-location" title="Permalink to this headline">¶</a></h1>
+<h2>Locating the nodes for each location<a class="headerlink" href="#Locating-the-nodes-for-each-location" title="Permalink to this headline">¶</a></h2>
 <p>We use cDKTree to locate the nodes of the school and subways.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[96]:
@@ -1838,6 +1833,7 @@ Name: distance_to_node, dtype: int64
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">schools</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;distance_to_node&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="Finding-the-nearest-2-subway-entrances">
@@ -2238,9 +2234,8 @@ Name: distance_to_node, dtype: int64
 </div>
 </div>
 </div>
-</div>
 <div class="section" id="Network-distance">
-<h1>Network distance<a class="headerlink" href="#Network-distance" title="Permalink to this headline">¶</a></h1>
+<h2>Network distance<a class="headerlink" href="#Network-distance" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[147]:
 </pre></div>
@@ -2310,6 +2305,7 @@ It took 0.0028666459189520942 hours
 <span></span><span class="n">schools</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route1_dist&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route2_dist&#39;</span><span class="p">]),</span> <span class="s1">&#39;shortest_network_geom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route1_geom&#39;</span><span class="p">]</span>
 <span class="n">schools</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route1_dist&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route2_dist&#39;</span><span class="p">]),</span> <span class="s1">&#39;shortest_network_geom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schools</span><span class="p">[</span><span class="s1">&#39;route2_geom&#39;</span><span class="p">]</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="Plot-the-schools,-subway-and-routes">
