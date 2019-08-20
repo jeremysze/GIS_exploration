@@ -12,9 +12,11 @@ Welcome to GIS Exploration's documentation!
 
    networkdistance_osm.ipynb
    networkdistance_lion.ipynb
+   Network_distance_example.ipynb
    networkdistance_lion-issues.ipynb
    snapping_points_to_line.ipynb
    Extracting_lion.ipynb
+
 
 Indices and tables
 ==================
