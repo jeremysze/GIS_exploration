@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using matplotlib’s zoomed_inset_axes with geopandas" href="zoomed_inset_axes.html" />
     <link rel="prev" title="Snapping points to line" href="snapping_points_to_line.html" /> 
 </head>
 
@@ -83,6 +84,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="networkdistance_osm.html">Network distance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networkdistance_lion.html">Network Distance with LION map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Network_distance_example.html">Network distance tying it all together</a></li>
 <li class="toctree-l1"><a class="reference internal" href="networkdistance_lion-issues.html">Network Distance with LION map (weight)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="snapping_points_to_line.html">Snapping points to line</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extracting LION from BYTES of the BIG APPLE</a><ul>
@@ -90,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Extracting-the-lion-layer">Extracting the lion layer</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="zoomed_inset_axes.html">Using matplotlib’s zoomed_inset_axes with geopandas</a></li>
 </ul>
 
             
@@ -378,10 +381,8 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Extracting-LION-from-BYTES-of-the-BIG-APPLE">
 <h1>Extracting LION from BYTES of the BIG APPLE<a class="headerlink" href="#Extracting-LION-from-BYTES-of-the-BIG-APPLE" title="Permalink to this headline">¶</a></h1>
-<p>We want to use each student-year-addresses with the respective year’s “LION - File Geodatabase” to calculate the network distance.</p>
-<p>“LION - File Geodatabase” from 2012 to 2016 with student addresses</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -403,24 +404,6 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>&#39;C:\\Work\\Box Sync\\Fresh\\code&#39;
-</pre></div>
-</div>
-</div>
 <div class="section" id="Downloading-the-LION---File-Geodatabase">
 <h2>Downloading the LION - File Geodatabase<a class="headerlink" href="#Downloading-the-LION---File-Geodatabase" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
@@ -428,38 +411,35 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">lion_2016</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion16a.zip&quot;</span>
-<span class="n">lion_2015</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion15a.zip&quot;</span>
-<span class="n">lion_2014</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion14aav.zip&quot;</span>
-<span class="n">lion_2013</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion13a.zip&quot;</span>
-<span class="n">lion_2012</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;nyc_lion12aav.zip&quot;</span>
-<span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/&quot;</span>
+<span></span><span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/&quot;</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Loop type: Iterating over a tuple</span>
-<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a.zip&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav.zip&quot;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion11aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion10aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion09ashp&quot;</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
     <span class="c1">#print(path+i)</span>
     <span class="c1"># download the file contents in binary format</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s2">&quot;.zip&quot;</span><span class="p">)</span>
     <span class="c1"># open method to open a file on your system and write the contents</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s2">&quot;.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav&quot;</span><span class="p">)</span>
+<span></span><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nyc_lion16a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion15a&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion14aav&quot;</span><span class="p">,</span> <span class="s2">&quot;nyc_lion13a&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion12aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion11aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion10aav&quot;</span><span class="p">,</span><span class="s2">&quot;nyc_lion09ashp&quot;</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
     <span class="n">fp</span> <span class="o">=</span> <span class="s2">&quot;../input_data/&quot;</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="s2">&quot;.zip&quot;</span>
 
@@ -484,16 +464,86 @@ div.rendered_html tbody tr:hover {
 Done!
 Done!
 Done!
-Done!
-Done!
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="Extracting-the-lion-layer">
 <h2>Extracting the lion layer<a class="headerlink" href="#Extracting-the-lion-layer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>This is done manually rather than through loops because the file structure within each year’s LION folder is a little different</p></li>
+<li><p>lion geodatabase for year 2010 had issues with opening the file</p></li>
+<li><p>see <code class="docutils literal notranslate"><span class="pre">lion_gdf</span> <span class="pre">=</span> <span class="pre">gpd.read_file(&quot;../input_data/nyc_lion10aav/lion/lion.gdb&quot;,</span> <span class="pre">driver='OpenFileGDB',</span> <span class="pre">layer='lion')</span></code></p></li>
+<li><p>Used an extracted lion layer from 2010 from a colleague who opened the gdb with arcGIS</p></li>
 </ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gdb_paths</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2009&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion09ashp/lion/lion.shp&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2010&quot;</span><span class="p">,</span> <span class="s2">&quot;../input_data/nyc_lion10aav/lion_erilia/lion_generic_2010.shp&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;lion_gdf2011&quot;</span><span class="p">,</span><span class="s2">&quot;../input_data/nyc_lion11aav/lion/lion.gdb&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reading in file: &quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;OpenFileGDB&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;lion&#39;</span><span class="p">)</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Removing the non pedestrian accessible roads/paths&quot;</span><span class="p">)</span>
+    <span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">]))</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">]))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating dataframe: &quot;</span> <span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">clean_lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">lion_gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>
+    <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;todrop&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clean_lion_gdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">length</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating new folder -&quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span> <span class="s2">&quot;- in intermediate_data&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../intermediate_data/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Folder already made...&quot;</span><span class="p">)</span>
+
+    <span class="c1">#Saving the clean_lion_gdf in their respective folders</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.shp&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing data to &quot;</span><span class="o">+</span> <span class="n">fp</span><span class="p">)</span>
+    <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading in file: ../input_data/nyc_lion09ashp/lion/lion.shp
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2009
+Creating new folder -lion_gdf2009- in intermediate_data
+Folder already made...
+Writing data to ../intermediate_data/lion_gdf2009/lion_gdf2009.shp
+Done!
+Reading in file: ../input_data/nyc_lion10aav/lion_erilia/lion_generic_2010.shp
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2010
+Creating new folder -lion_gdf2010- in intermediate_data
+Folder already made...
+Writing data to ../intermediate_data/lion_gdf2010/lion_gdf2010.shp
+Done!
+Reading in file: ../input_data/nyc_lion11aav/lion/lion.gdb
+Removing the non pedestrian accessible roads/paths
+Creating dataframe: lion_gdf2011
+Creating new folder -lion_gdf2011- in intermediate_data
+Folder already made...
+Writing data to ../intermediate_data/lion_gdf2011/lion_gdf2011.shp
+Done!
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -509,8 +559,11 @@ Done!
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reading in file: &quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;FileGDB&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;lion&#39;</span><span class="p">)</span>
-    <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;FileGDB&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;lion&#39;</span><span class="p">)</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">lion_gdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">({</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">lion_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Removing the non pedestrian accessible roads/paths&quot;</span><span class="p">)</span>
     <span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;todrop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;NonPed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;FeatureTyp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;9&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">]))</span> <span class="o">|</span><span class="p">(</span><span class="n">lion_gdf</span><span class="p">[</span><span class="s1">&#39;TrafDir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39; &#39;</span><span class="p">]))</span>
@@ -522,10 +575,12 @@ Done!
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating new folder -&quot;</span> <span class="o">+</span> <span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span> <span class="s2">&quot;- in intermediate_data&quot;</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../intermediate_data/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Folder already made...&quot;</span><span class="p">)</span>
 
     <span class="c1">#Saving the clean_lion_gdf in their respective folders</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing data to&quot;</span><span class="p">)</span>
     <span class="n">fp</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">gdb_paths</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.shp&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Writing data to &quot;</span><span class="o">+</span> <span class="n">fp</span><span class="p">)</span>
     <span class="n">clean_lion_gdf</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -585,6 +640,8 @@ Done!
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zoomed_inset_axes.html" class="btn btn-neutral float-right" title="Using matplotlib’s zoomed_inset_axes with geopandas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="snapping_points_to_line.html" class="btn btn-neutral float-left" title="Snapping points to line" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

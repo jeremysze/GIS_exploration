@@ -4,16 +4,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Extracting LION from BYTES of the BIG APPLE\n",
-    "\n",
-    "We want to use each student-year-addresses with the respective year's \"LION - File Geodatabase\" to calculate the network distance.\n",
-    "\n",
-    "\"LION - File Geodatabase\" from 2012 to 2016 with student addresses"
+    "# Extracting LION from BYTES of the BIG APPLE\n"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -35,26 +31,6 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": 2,
-   "metadata": {},
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "'C:\\\\Work\\\\Box Sync\\\\Fresh\\\\code'"
-      ]
-     },
-     "execution_count": 2,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "os.getcwd()"
-   ]
-  },
-  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -67,34 +43,30 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "lion_2016 = r\"nyc_lion16a.zip\"\n",
-    "lion_2015 = r\"nyc_lion15a.zip\"\n",
-    "lion_2014 = r\"nyc_lion14aav.zip\"\n",
-    "lion_2013 = r\"nyc_lion13a.zip\"\n",
-    "lion_2012 = r\"nyc_lion12aav.zip\"\n",
     "path = r\"https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/\""
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [],
    "source": [
     "# Loop type: Iterating over a tuple\n",
-    "t = (\"nyc_lion16a.zip\", \"nyc_lion15a.zip\", \"nyc_lion14aav.zip\", \"nyc_lion13a.zip\",\"nyc_lion12aav.zip\") \n",
+    "t = (\"nyc_lion16a\", \"nyc_lion15a\", \"nyc_lion14aav\", \"nyc_lion13a\",\"nyc_lion12aav\",\"nyc_lion11aav\",\"nyc_lion10aav\",\"nyc_lion09ashp\") \n",
+    "\n",
     "for i in t: \n",
     "    #print(path+i)\n",
     "    # download the file contents in binary format\n",
-    "    r = requests.get(path+i)\n",
+    "    r = requests.get(path+i+\".zip\")\n",
     "    # open method to open a file on your system and write the contents\n",
-    "    with open(\"../input_data/\"+i, \"wb\") as file:\n",
+    "    with open(\"../input_data/\"+i+\".zip\", \"wb\") as file:\n",
     "        file.write(r.content)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -103,14 +75,13 @@
      "text": [
       "Done!\n",
       "Done!\n",
-      "Done!\n",
-      "Done!\n",
       "Done!\n"
      ]
     }
    ],
    "source": [
-    "t = (\"nyc_lion16a\", \"nyc_lion15a\", \"nyc_lion14aav\", \"nyc_lion13a\",\"nyc_lion12aav\") \n",
+    "t = (\"nyc_lion16a\", \"nyc_lion15a\", \"nyc_lion14aav\", \"nyc_lion13a\",\"nyc_lion12aav\",\"nyc_lion11aav\",\"nyc_lion10aav\",\"nyc_lion09ashp\") \n",
+    "\n",
     "for i in t:\n",
     "    fp = \"../input_data/\"+i+\".zip\"\n",
     "\n",
@@ -131,15 +102,87 @@
    "metadata": {},
    "source": [
     "## Extracting the lion layer\n",
-    "- This is done manually rather than through loops because the file structure within each year's LION folder is a little different"
+    " - lion geodatabase for year 2010 had issues with opening the file\n",
+    " - see `lion_gdf = gpd.read_file(\"../input_data/nyc_lion10aav/lion/lion.gdb\", driver='OpenFileGDB', layer='lion')`\n",
+    " - Used an extracted lion layer from 2010 from a colleague who opened the gdb with arcGIS"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Reading in file: ../input_data/nyc_lion09ashp/lion/lion.shp\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2009\n",
+      "Creating new folder -lion_gdf2009- in intermediate_data\n",
+      "Folder already made...\n",
+      "Writing data to ../intermediate_data/lion_gdf2009/lion_gdf2009.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion10aav/lion_erilia/lion_generic_2010.shp\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2010\n",
+      "Creating new folder -lion_gdf2010- in intermediate_data\n",
+      "Folder already made...\n",
+      "Writing data to ../intermediate_data/lion_gdf2010/lion_gdf2010.shp\n",
+      "Done!\n",
+      "Reading in file: ../input_data/nyc_lion11aav/lion/lion.gdb\n",
+      "Removing the non pedestrian accessible roads/paths\n",
+      "Creating dataframe: lion_gdf2011\n",
+      "Creating new folder -lion_gdf2011- in intermediate_data\n",
+      "Folder already made...\n",
+      "Writing data to ../intermediate_data/lion_gdf2011/lion_gdf2011.shp\n",
+      "Done!\n"
+     ]
+    }
+   ],
+   "source": [
+    "gdb_paths = [\n",
+    "    [\"lion_gdf2009\",\"../input_data/nyc_lion09ashp/lion/lion.shp\"],\n",
+    "    [\"lion_gdf2010\", \"../input_data/nyc_lion10aav/lion_erilia/lion_generic_2010.shp\"],\n",
+    "    [\"lion_gdf2011\",\"../input_data/nyc_lion11aav/lion/lion.gdb\"]\n",
+    "]\n",
+    "\n",
+    "for i in range(len(gdb_paths)):\n",
+    "    print(\"Reading in file: \" + gdb_paths[i][1])\n",
+    "    try:\n",
+    "        lion_gdf = gpd.read_file(gdb_paths[i][1], driver='OpenFileGDB', layer='lion')\n",
+    "        lion_gdf = lion_gdf.to_crs({'init': 'epsg:4326'})\n",
+    "    except:\n",
+    "        lion_gdf = gpd.read_file(gdb_paths[i][1])\n",
+    "    \n",
+    "    print(\"Removing the non pedestrian accessible roads/paths\")\n",
+    "    lion_gdf['todrop'] = (lion_gdf['NonPed'] == 'V') |(lion_gdf['FeatureTyp'].isin(['F','9','1','7','3'])) |(lion_gdf['TrafDir'].isin([' ']))\n",
+    "    \n",
+    "    print(\"Creating dataframe: \" +gdb_paths[i][0])\n",
+    "    clean_lion_gdf = gpd.GeoDataFrame(lion_gdf.loc[lion_gdf['todrop'] == False])\n",
+    "    clean_lion_gdf.drop(['todrop'], axis = 1, inplace = True)\n",
+    "    clean_lion_gdf['distance'] = clean_lion_gdf['geometry'].length\n",
+    "    \n",
+    "    print(\"Creating new folder -\" + gdb_paths[i][0]+ \"- in intermediate_data\")\n",
+    "    path = \"../intermediate_data/\"+gdb_paths[i][0]\n",
+    "    try:\n",
+    "        os.mkdir(path)\n",
+    "    except:\n",
+    "        print(\"Folder already made...\")\n",
+    "        \n",
+    "    #Saving the clean_lion_gdf in their respective folders    \n",
+    "    fp = path+\"/\"+gdb_paths[i][0]+\".shp\"\n",
+    "    print(\"Writing data to \"+ fp)\n",
+    "    clean_lion_gdf.to_file(fp)\n",
+    "    print(\"Done!\")\n",
+    "    \n",
+    "    "
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 7,
-   "metadata": {
-    "scrolled": false
-   },
+   "metadata": {},
    "outputs": [
     {
      "name": "stdout",
@@ -194,8 +237,11 @@
     "\n",
     "for i in range(len(gdb_paths)):\n",
     "    print(\"Reading in file: \" + gdb_paths[i][1])\n",
-    "    lion_gdf = gpd.read_file(gdb_paths[i][1], driver='FileGDB', layer='lion')\n",
-    "    lion_gdf = lion_gdf.to_crs({'init': 'epsg:4326'})\n",
+    "    try:\n",
+    "        lion_gdf = gpd.read_file(gdb_paths[i][1], driver='FileGDB', layer='lion')\n",
+    "        lion_gdf = lion_gdf.to_crs({'init': 'epsg:4326'})\n",
+    "    except:\n",
+    "        lion_gdf = gpd.read_file(gdb_paths[i][1])\n",
     "    \n",
     "    print(\"Removing the non pedestrian accessible roads/paths\")\n",
     "    lion_gdf['todrop'] = (lion_gdf['NonPed'] == 'V') |(lion_gdf['FeatureTyp'].isin(['F','9','1','7','3'])) |(lion_gdf['TrafDir'].isin([' ']))\n",
@@ -207,10 +253,12 @@
     "    \n",
     "    print(\"Creating new folder -\" + gdb_paths[i][0]+ \"- in intermediate_data\")\n",
     "    path = \"../intermediate_data/\"+gdb_paths[i][0]\n",
-    "    os.mkdir(path)\n",
-    "    \n",
-    "    #Saving the clean_lion_gdf in their respective folders\n",
-    "    print(\"Writing data to\")\n",
+    "    try:\n",
+    "        os.mkdir(path)\n",
+    "    except:\n",
+    "        print(\"Folder already made...\")\n",
+    "        \n",
+    "    #Saving the clean_lion_gdf in their respective folders    \n",
     "    fp = path+\"/\"+gdb_paths[i][0]+\".shp\"\n",
     "    print(\"Writing data to \"+ fp)\n",
     "    clean_lion_gdf.to_file(fp)\n",
@@ -238,5 +286,5 @@
   }
  },
  "nbformat": 4,
- "nbformat_minor": 2
+ "nbformat_minor": 4
 }
